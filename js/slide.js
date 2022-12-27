@@ -61,8 +61,6 @@ export class Slide {
     } else {
       this.changeSlide(this.index.active);
     }
-
-    console.log(this.dist.movement);
   }
 
   addSlideEvents() {
@@ -82,10 +80,7 @@ export class Slide {
   slidesConfig() {
     this.slideArray = [...this.slide.children].map((element) => {
       const position = this.slidePosition(element);
-      return {
-        position,
-        element,
-      };
+      return { position, element };
     });
   }
 
@@ -107,38 +102,40 @@ export class Slide {
   }
 
   changeActiveClass() {
-    this.slideArray.forEach((item) => {
-      item.element.classList.remove(this.activeClass);
-    });
+    this.slideArray.forEach((item) =>
+      item.element.classList.remove(this.activeClass)
+    );
     this.slideArray[this.index.active].element.classList.add(this.activeClass);
   }
 
-  activeNextSlide() {
+  activePrevSlide() {
     if (this.index.prev !== undefined) this.changeSlide(this.index.prev);
   }
 
-  activePrevSlide() {
+  activeNextSlide() {
     if (this.index.next !== undefined) this.changeSlide(this.index.next);
   }
 
-  onResise() {
+  onResize() {
     setTimeout(() => {
       this.slidesConfig();
       this.changeSlide(this.index.active);
     }, 1000);
   }
 
-  addReciseEvent() {
-    window.addEventListener("resize", this.onResise);
+  addResizeEvent() {
+    window.addEventListener("resize", this.onResize);
   }
 
   bindEvents() {
     this.onStart = this.onStart.bind(this);
     this.onMove = this.onMove.bind(this);
     this.onEnd = this.onEnd.bind(this);
+
     this.activePrevSlide = this.activePrevSlide.bind(this);
     this.activeNextSlide = this.activeNextSlide.bind(this);
-    this.onResise = debounce(this.onResise.bind(this), 200);
+
+    this.onResize = debounce(this.onResize.bind(this), 200);
   }
 
   init() {
@@ -146,18 +143,19 @@ export class Slide {
     this.transition(true);
     this.addSlideEvents();
     this.slidesConfig();
-    this.addReciseEvent();
+    this.addResizeEvent();
     this.changeSlide(0);
     return this;
   }
 }
 
 export class SlideNav extends Slide {
-  addArrow(next, prev) {
+  addArrow(prev, next) {
     this.prevElement = document.querySelector(prev);
     this.nextElement = document.querySelector(next);
     this.addArrowEvent();
   }
+
   addArrowEvent() {
     this.prevElement.addEventListener("click", this.activePrevSlide);
     this.nextElement.addEventListener("click", this.activeNextSlide);
